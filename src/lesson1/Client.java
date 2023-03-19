@@ -7,10 +7,14 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
 
+import static lesson1.ChatServer.clientList;
+
 class Client implements Runnable {
     Socket socket;
+    Scanner in;
+    PrintStream out;
 
-    public Client(Socket socket){
+    public Client(Socket socket) {
 
         this.socket = socket;
     }
@@ -23,19 +27,26 @@ class Client implements Runnable {
 
             // создаем удобные средства ввода и вывода
             Scanner in = new Scanner(is);
-            PrintStream out = new PrintStream(os);
+            out = new PrintStream(os);
 
             // читаем из сети и пишем в сеть
             out.println("Welcome to mountains!");
             String input = in.nextLine();
             while (!input.equals("bye")) {
-                out.println(input + "-" + input + "-" +
-                        input.substring(input.length() / 2) + "...");
+                //заменить методом, который будет обращаться к методу в классе echoServer, который будет рассылать другим клиентам сообщение
+                ChatServer.sendAll(input, this);
                 input = in.nextLine();
             }
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
+    public void recieve (String message){
+        out.println(message);
+
+    }
+
+
 }
