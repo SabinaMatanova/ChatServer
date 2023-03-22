@@ -1,33 +1,35 @@
 package lesson3;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.stream.Stream;
 
 import static java.lang.Thread.sleep;
 
-public class ConsoleClock {
-
-    public static void main(String[] args) throws InterruptedException {
-        Thread t1 = new Thread() {
-            public void run() {
-                Calendar time = new GregorianCalendar();
-                while (!isInterrupted()) {
-                    System.out.println(time.get(Calendar.HOUR) + ":" + time.get(Calendar.MINUTE) + ":" + time.get(Calendar.SECOND));
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-
-                }
-                System.out.println("The clock was stopped");
+public class ConsoleClock extends Thread {
+    @Override
+    public void run() {
+        while (!isInterrupted()) {
+            DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+            Calendar cali = Calendar.getInstance();
+            cali.getTime();
+            String time = timeFormat.format(cali.getTimeInMillis());
+            System.out.println(time);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                break;
             }
-        };
 
-        t1.start();
-        Thread.currentThread().sleep(3000);
-        t1.interrupt();
-        System.out.println("Thread finished");
+        }
+        System.out.println("The clock was stopped");
+
     }
 
+    public static void main(String[] args) throws InterruptedException {
+        ConsoleClock cc = new ConsoleClock();
+        cc.start();
+        Thread.sleep(3000);
+        cc.interrupt();
+    }
 }
